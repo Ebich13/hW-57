@@ -1,18 +1,33 @@
 import React, {useState} from 'react';
+import {UserMutation} from '../../../types';
 
 interface Props {
   onSubmit: (user: User) => void;
 }
 const UserForm: React.FC<Props> = ({onSubmit}) => {
-  const [user, setUser] = useState({
+  const [user, setUser] = useState<UserMutation>({
     name: '',
     email: '',
-    isActive:'',
-    role: '',
+    role: 'user',
   });
 
+  const changeUser = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    setUser((prev) => ({
+      ...prev,
+        [e.target.name]: e.target.value,
+    }));
+  };
+
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      id:Math.random().toString(),
+      ...user,
+    });
+  };
+
   return (
-    <form>
+    <form onSubmit={onFormSubmit}>
       <h3>Add new user</h3>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">Name</label>
@@ -21,6 +36,8 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
           name="name"
           id="name"
           className="form-control"
+          value={user.name}
+          onChange={changeUser}
           />
       </div>
       <div className="mb-3">
@@ -30,14 +47,17 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
         <input
           type="email"
           className="form-control"
+          name="email"
           id="email"
+          value={user.email}
+          onChange={changeUser}
         />
       </div>
       <div className="mb-3 form-check">
         <input
+          id="isActive"
           type="checkbox"
           className="form-check-input"
-          id="isActive"
         />
         <label className="form-check-label" htmlFor="isActive">
           Active
@@ -49,7 +69,10 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
         </label>
         <select
           className="form-select"
+          name="role"
           id="role"
+          value={user.role}
+          onChange={changeUser}
         >
           <option value="user">User</option>
           <option value="editor">Editor</option>
@@ -57,7 +80,7 @@ const UserForm: React.FC<Props> = ({onSubmit}) => {
         </select>
       </div>
       <button type="submit" className="btn btn-primary">
-        Create User
+        Add user
       </button>
     </form>
   );

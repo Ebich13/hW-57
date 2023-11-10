@@ -6,3 +6,9 @@ export interface User {
   role: string;
 }
 
+export interface UserMutation {
+  name: string;
+  email: string;
+  role: string;
+}
+
